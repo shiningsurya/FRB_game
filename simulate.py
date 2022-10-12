@@ -19,7 +19,7 @@ def data(num, seed):
     period=np.random.uniform(1, 200, n) #period in days
     d_cycle=np.random.uniform(0.01,0.499, n) #duty cycle  
     s_phase=np.random.uniform(0, 0.999, n) #start phase
-    name=[("sample_%d"%i) for i in range(n)]
+    name=[("sample_%d_%d"%(s,i)) for i in range(n)]
     ##############################
 
     #Coverting into DataFrame and saving as CSV file
