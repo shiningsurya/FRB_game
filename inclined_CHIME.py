@@ -7,12 +7,13 @@ from astropy.time import Time
 from astroplan import Observer
 import warnings
 import time
+import gc
 
 #user defined file
 import simulate
 
 n= 4100 #number of repeating FRBs
-ndatasets= 10 #Number of Datasets to be generated, saved, and analysed
+ndatasets= 5 #Number of Datasets to be generated, saved, and analysed
 ndays= 2*365 #Number of observation days for a given dataset
 
 R= Time('2000-01-01T12:00:00') #reference epoch
@@ -29,7 +30,7 @@ k2= 105
 h3= 360
 k3= 105
 
-for nd in range(ndatasets): #range of seed values 
+for nd in range(ndatasets): #range of seed values, one can put a perticular range as well eg. range(5,10)
 
     st = time.time()
     print("Dataset: %d"%(nd+1))
@@ -110,20 +111,19 @@ for nd in range(ndatasets): #range of seed values
             r2+= r3
             r+= r2
             if r.sum()>=1: #checking if at any point passes through beam region
-                obs_t= np.where(r==True)[0]
-                if np.std(obs_t)>100:
-                    t1= obs_t[obs_t<np.mean(obs_t)]
-                    ent.append( start+ ((end - start) * (t1[0]/len(twin))) )
-                    ext.append( start+ ((end - start) * (t1[-1]/len(twin))) )
-                    obs_frbs.append(Act_frbs.iloc[m])
-                    t2= obs_t[obs_t>np.mean(obs_t)]
-                    ent.append( start+ ((end - start) * (t2[0]/len(twin))) )
-                    ext.append( start+ ((end - start) * (t2[-1]/len(twin))) ) 
-                    obs_frbs.append(Act_frbs.iloc[m])
+                dr= np.diff(r, prepend=0)
+                sp= np.where(dr!=0)[0]
+                if len(sp)%2!=0:
+                    sp= np.append(sp, sp[-1]+1)
+                    sp= sp.reshape((-1, 2))
+                    [ent.append( start+ ((end - start) * (l/len(twin))) ) for l in sp[:,0]]
+                    [ext.append( start+ ((end - start) * (l/len(twin))) ) for l in sp[:,1]]
+                    for l in range(len(sp)): obs_frbs.append(Act_frbs.iloc[m])
                 else:
-                    ent.append( start+ ((end - start) * (obs_t[0]/len(twin))) )
-                    ext.append( start+ ((end - start) * (obs_t[-1]/len(twin))) )
-                    obs_frbs.append(Act_frbs.iloc[m]) #indexing is same for saa, coordsky and Act_frbs_T.Act_name
+                    sp= sp.reshape((-1, 2))
+                    [ent.append( start+ ((end - start) * (l/len(twin))) ) for l in sp[:,0]]
+                    [ext.append( start+ ((end - start) * (l/len(twin))) ) for l in sp[:,1]]
+                    for l in range(len(sp)): obs_frbs.append(Act_frbs.iloc[m])#indexing is same for Act_frbs
 
     obs_frbs= pd.DataFrame(obs_frbs)
     obs_frbs= obs_frbs.reset_index(drop=True)
@@ -141,6 +141,10 @@ for nd in range(ndatasets): #range of seed values
 
     print(f'For saving data: {time.time() - st2} seconds')
     print(f'For One 2 years run: {time.time() - st} seconds')
+
+    del obs_frbs
+    del my_saa
+    gc.collect()
 
 ##################################################################################################
 #Piece of code to convert string values of entry and exit time to Astropy time
