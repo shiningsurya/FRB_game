@@ -13,7 +13,7 @@ import gc
 import simulate
 
 n= 4100 #number of repeating FRBs
-ndatasets= 160 #Number of Datasets to be generated, saved, and analysed
+ndatasets= 5 #Number of Datasets to be generated, saved, and analysed
 ndays= 2*365 #Number of observation days for a given dataset
 
 R= Time('2000-01-01T12:00:00') #reference epoch
@@ -30,7 +30,7 @@ k2= 90
 h3= 360
 k3= 90
 
-for nd in range(150, ndatasets): #range of seed values 
+for nd in range(ndatasets): #range of seed values, one can put a perticular range as well eg. range(5,10)
 
     st = time.time()
     print("Dataset: %d"%(nd+1))
