@@ -104,12 +104,12 @@ for nd in range(51, ndatasets): #range of seed values
             r= (pow((x - h), 2) / pow(a, 2)) + (pow((y - k), 2) / pow(b, 2)); 
             #r<1 inside, r=1 on the ellipse, r>1 outside
             r= r<=1 
-            r2 = (pow((x - h2), 2) / pow(a, 2)) + (pow((y - k2), 2) / pow(b, 2)); 
-            r2= r2<=1
+            #r2 = (pow((x - h2), 2) / pow(a, 2)) + (pow((y - k2), 2) / pow(b, 2)); 
+            #r2= r2<=1
             r3 = (pow((x - h3), 2) / pow(a, 2)) + (pow((y - k3), 2) / pow(b, 2)); 
             r3= r3<=1
-            r2+= r3
-            r+= r2
+            #r2+= r3
+            r+= r3#r2
             if r.sum()>=1: #checking if at any point passes through beam region
                 dr= np.diff(r, prepend=0)
                 sp= np.where(dr!=0)[0]
