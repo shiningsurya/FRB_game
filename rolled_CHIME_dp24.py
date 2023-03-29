@@ -13,7 +13,7 @@ import gc
 import simulate_dp24
 
 n= 50 #number of repeating FRBs
-ndatasets= 5 #Number of Datasets to be generated, saved, and analysed
+ndatasets= 290 #Number of Datasets to be generated, saved, and analysed
 ndays= 2*365 #Number of observation days for a given dataset
 
 R= Time('2000-01-01T12:00:00') #reference epoch
@@ -30,7 +30,7 @@ k= 90 #center point alt
 h3= 345
 k3= 90
 
-for nd in range(ndatasets): #range of seed values 
+for nd in range(51, ndatasets): #range of seed values 
 
     st = time.time()
     print("Dataset: %d"%(nd+1))
@@ -128,7 +128,7 @@ for nd in range(ndatasets): #range of seed values
     obs_frbs= pd.DataFrame(obs_frbs)
     obs_frbs= obs_frbs.reset_index(drop=True)
     #Saving all observed frbs in file
-    outdir = 'E:/FRB Project Data/Observed_FRBs_Rolled_CHIME_DP24'
+    outdir = 'Observed_FRBs_Rolled_CHIME_DP24'
     if not os.path.exists(outdir):
         os.mkdir(outdir)
 
